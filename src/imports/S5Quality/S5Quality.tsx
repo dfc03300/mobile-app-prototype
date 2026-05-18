@@ -1,5 +1,4 @@
 import { useState } from "react";
-import S3Preview from "../S3Preview/S3Preview";
 
 interface S5QualityProps {
   isOpen: boolean;
@@ -119,7 +118,7 @@ function Content2() {
 
 function Component({ onPrev, onNext, hasAnyChecked }: { onPrev: () => void; onNext: () => void; hasAnyChecked: boolean }) {
   return (
-    <div className="absolute content-stretch flex gap-[8px] items-center justify-center left-0 p-[24px] top-[701px] w-full" data-name="버튼">
+    <div className="content-stretch flex gap-[8px] items-center justify-center p-[24px] pt-[8px] w-full shrink-0" data-name="버튼">
       <div onClick={onPrev} className="bg-white max-w-[400px] relative rounded-[999px] shrink-0 cursor-pointer" data-name="button-legacy">
         <div className="content-stretch flex items-center justify-center max-w-[inherit] overflow-clip px-[24px] py-[12px] relative rounded-[inherit] size-full">
           <Content1 />
@@ -154,16 +153,19 @@ function BottomSheet({ blurry, notes, incomplete, onBlurryChange, onNotesChange,
   hasAnyChecked: boolean;
 }) {
   return (
-    <div className="absolute bg-[rgba(11,13,17,0.6)] h-full left-0 overflow-clip top-0 w-full z-10" data-name="BottomSheet">
-      <BottomSheet1
-        blurry={blurry}
-        notes={notes}
-        incomplete={incomplete}
-        onBlurryChange={onBlurryChange}
-        onNotesChange={onNotesChange}
-        onIncompleteChange={onIncompleteChange}
-      />
-      <Component onPrev={onPrev} onNext={onNext} hasAnyChecked={hasAnyChecked} />
+    <div className="absolute inset-0 bg-[rgba(11,13,17,0.6)] overflow-hidden z-10" data-name="BottomSheet">
+      <div className="absolute bottom-0 left-0 right-0 bg-white content-stretch flex max-h-[calc(100%-24px)] flex-col items-center overflow-hidden rounded-tl-[24px] rounded-tr-[24px] shadow-[0px_-8px_16px_0px_rgba(11,13,17,0.08)]" data-name="Bottom Sheet">
+        <Title />
+        <Content
+          blurry={blurry}
+          notes={notes}
+          incomplete={incomplete}
+          onBlurryChange={onBlurryChange}
+          onNotesChange={onNotesChange}
+          onIncompleteChange={onIncompleteChange}
+        />
+        <Component onPrev={onPrev} onNext={onNext} hasAnyChecked={hasAnyChecked} />
+      </div>
     </div>
   );
 }
@@ -178,23 +180,18 @@ export default function S5Quality({ isOpen, onClose, onNext, onPrev }: S5Quality
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
-      <div className="bg-white content-stretch flex flex-col items-center relative h-full w-full overflow-hidden" data-name="s5-quality">
-        <div className="absolute inset-0 z-0">
-          <S3Preview />
-        </div>
-        <BottomSheet
-          blurry={blurry}
-          notes={notes}
-          incomplete={incomplete}
-          onBlurryChange={() => setBlurry(!blurry)}
-          onNotesChange={() => setNotes(!notes)}
-          onIncompleteChange={() => setIncomplete(!incomplete)}
-          onPrev={onPrev}
-          onNext={onNext}
-          hasAnyChecked={hasAnyChecked}
-        />
-      </div>
+    <div className="absolute inset-0 z-50 overflow-hidden">
+      <BottomSheet
+        blurry={blurry}
+        notes={notes}
+        incomplete={incomplete}
+        onBlurryChange={() => setBlurry(!blurry)}
+        onNotesChange={() => setNotes(!notes)}
+        onIncompleteChange={() => setIncomplete(!incomplete)}
+        onPrev={onPrev}
+        onNext={onNext}
+        hasAnyChecked={hasAnyChecked}
+      />
     </div>
   );
 }

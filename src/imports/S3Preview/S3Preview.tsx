@@ -1,11 +1,15 @@
 import svgPaths from "./svg-19lihjlh62";
 import { useNavigate } from "react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import * as pdfjsLib from "pdfjs-dist";
+import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.mjs?url";
 import { useFiles, ConditionalFileProvider } from "../../app/contexts/FileContext";
 import S4Filelist from "../S4Filelist/S4Filelist";
 import S5Quality from "../S5Quality/S5Quality";
 import ConfirmHome from "../ConfirmHome/ConfirmHome";
 import TitleBar from "../../app/components/TitleBar";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
 function MailSendEmailAttachmentDocumentStreamlinePlump() {
   return (
@@ -242,7 +246,55 @@ function formatFileSize(size?: number) {
   return `${(size / (1024 * 1024)).toFixed(1)}MB`;
 }
 
-function PdfPreview({ filename, fileSize, fileUrl }: { filename: string; fileSize?: number; fileUrl: string }) {
+function PdfPreview({ filename, fileSize, fileUrl, file }: { filename: string; fileSize?: number; fileUrl: string; file?: File }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [renderFailed, setRenderFailed] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    let renderTask: { cancel: () => void } | undefined;
+
+    async function renderPdf() {
+      if (!file || !canvasRef.current) return;
+
+      try {
+        setRenderFailed(false);
+        const data = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data }).promise;
+        const page = await pdf.getPage(1);
+        const baseViewport = page.getViewport({ scale: 1 });
+        const scale = Math.min(280 / baseViewport.width, 390 / baseViewport.height, 1.4);
+        const viewport = page.getViewport({ scale });
+        const canvas = canvasRef.current;
+        const context = canvas.getContext("2d");
+
+        if (!context || cancelled) return;
+
+        canvas.width = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+        renderTask = page.render({ canvasContext: context, viewport });
+        await renderTask.promise;
+      } catch (error) {
+        if (!cancelled) setRenderFailed(true);
+      }
+    }
+
+    renderPdf();
+
+    return () => {
+      cancelled = true;
+      renderTask?.cancel();
+    };
+  }, [file]);
+
+  if (!renderFailed) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-white p-[12px]">
+        <canvas ref={canvasRef} className="max-h-full max-w-full rounded-[4px] shadow-[0px_2px_8px_rgba(11,13,17,0.12)]" />
+      </div>
+    );
+  }
+
   return (
     <a
       className="flex h-full w-full flex-col items-center justify-center gap-[12px] rounded-[10px] bg-white p-[24px] text-center"
@@ -270,7 +322,7 @@ function PdfPreview({ filename, fileSize, fileUrl }: { filename: string; fileSiz
   );
 }
 
-function Frame4({ imageUrl, fileType, filename, fileSize }: { imageUrl: string; fileType: string; filename: string; fileSize?: number }) {
+function Frame4({ imageUrl, fileType, filename, fileSize, file }: { imageUrl: string; fileType: string; filename: string; fileSize?: number; file?: File }) {
   const [imageError, setImageError] = useState(false);
   const isPdf = fileType.toLowerCase() === 'pdf';
   const isHeic = ['heic', 'heif'].includes(fileType.toLowerCase());
@@ -281,7 +333,7 @@ function Frame4({ imageUrl, fileType, filename, fileSize }: { imageUrl: string; 
         {!imageUrl ? (
           <p className="font-['Inter:Regular','Noto_Sans_KR:Regular',sans-serif] text-[14px] text-[#8c98a1]">파일을 선택해주세요</p>
         ) : isPdf ? (
-          <PdfPreview filename={filename} fileSize={fileSize} fileUrl={imageUrl} />
+          <PdfPreview filename={filename} fileSize={fileSize} fileUrl={imageUrl} file={file} />
         ) : isHeic ? (
           <div className="flex flex-col items-center gap-[8px] p-[24px] text-center">
             <p className="font-['Inter:Medium','Noto_Sans_KR:Medium',sans-serif] text-[14px] text-[#6a747c]">HEIC/HEIF 형식은 미리보기가 지원되지 않습니다</p>
@@ -306,7 +358,7 @@ function Frame4({ imageUrl, fileType, filename, fileSize }: { imageUrl: string; 
   );
 }
 
-function Body({ currentPage, totalPages, onPrev, onNext, filename, imageUrl, fileType, fileSize, onFileListClick }: { currentPage: number; totalPages: number; onPrev: () => void; onNext: () => void; filename: string; imageUrl: string; fileType: string; fileSize?: number; onFileListClick: () => void }) {
+function Body({ currentPage, totalPages, onPrev, onNext, filename, imageUrl, fileType, fileSize, file, onFileListClick }: { currentPage: number; totalPages: number; onPrev: () => void; onNext: () => void; filename: string; imageUrl: string; fileType: string; fileSize?: number; file?: File; onFileListClick: () => void }) {
   return (
     <div className="flex-[1_0_0] min-h-px relative w-full" data-name="body">
       <div className="flex flex-col items-center size-full">
@@ -314,7 +366,7 @@ function Body({ currentPage, totalPages, onPrev, onNext, filename, imageUrl, fil
           <ProblemQuantityHeader onFileListClick={onFileListClick} />
           <Frame3 filename={filename} />
           <Pagination currentPage={currentPage} totalPages={totalPages || 1} onPrev={onPrev} onNext={onNext} />
-          <Frame4 imageUrl={imageUrl} fileType={fileType} filename={filename} fileSize={fileSize} />
+          <Frame4 imageUrl={imageUrl} fileType={fileType} filename={filename} fileSize={fileSize} file={file} />
         </div>
       </div>
     </div>
@@ -402,6 +454,7 @@ function S3PreviewContent() {
   const imageUrl = currentFile?.preview || '';
   const fileType = currentFile?.file.name.split('.').pop() || '';
   const fileSize = currentFile?.file.size;
+  const file = currentFile?.file;
 
   return (
     <>
@@ -417,17 +470,18 @@ function S3PreviewContent() {
           imageUrl={imageUrl}
           fileType={fileType}
           fileSize={fileSize}
+          file={file}
           onFileListClick={handleOpenFileList}
         />
         <Component1 onNextClick={handleOpenQualityCheck} />
+        <S5Quality
+          isOpen={isQualityCheckOpen}
+          onClose={handleCloseQualityCheck}
+          onNext={handleQualityCheckNext}
+          onPrev={handleQualityCheckPrev}
+        />
       </div>
       <S4Filelist isOpen={isFileListOpen} onClose={handleCloseFileList} />
-      <S5Quality
-        isOpen={isQualityCheckOpen}
-        onClose={handleCloseQualityCheck}
-        onNext={handleQualityCheckNext}
-        onPrev={handleQualityCheckPrev}
-      />
       <ConfirmHome isOpen={showConfirmHome} onClose={() => setShowConfirmHome(false)} />
     </>
   );
