@@ -236,18 +236,52 @@ function Pagination({ currentPage, totalPages, onPrev, onNext }: { currentPage: 
   );
 }
 
-function Frame4({ imageUrl, fileType }: { imageUrl: string; fileType: string }) {
+function formatFileSize(size?: number) {
+  if (!size) return '';
+  if (size < 1024 * 1024) return `${Math.max(1, Math.round(size / 1024))}KB`;
+  return `${(size / (1024 * 1024)).toFixed(1)}MB`;
+}
+
+function PdfPreview({ filename, fileSize, fileUrl }: { filename: string; fileSize?: number; fileUrl: string }) {
+  return (
+    <a
+      className="flex h-full w-full flex-col items-center justify-center gap-[12px] rounded-[10px] bg-white p-[24px] text-center"
+      href={fileUrl}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <div className="flex size-[72px] items-center justify-center rounded-[18px] bg-[#eef5ff]">
+        <div className="font-['Inter:Bold',sans-serif] text-[22px] font-bold text-[#416df0]">PDF</div>
+      </div>
+      <div className="max-w-full">
+        <p className="truncate font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] text-[15px] font-bold leading-[1.44] text-[#0b0d11]">
+          {filename}
+        </p>
+        {fileSize ? (
+          <p className="mt-[4px] font-['Inter:Medium',sans-serif] text-[13px] font-medium leading-[1.44] text-[#6a747c]">
+            {formatFileSize(fileSize)}
+          </p>
+        ) : null}
+      </div>
+      <p className="font-['Inter:Medium','Noto_Sans_KR:Medium',sans-serif] text-[13px] font-medium leading-[1.44] text-[#416df0]">
+        미리보기 열기
+      </p>
+    </a>
+  );
+}
+
+function Frame4({ imageUrl, fileType, filename, fileSize }: { imageUrl: string; fileType: string; filename: string; fileSize?: number }) {
   const [imageError, setImageError] = useState(false);
   const isPdf = fileType.toLowerCase() === 'pdf';
   const isHeic = ['heic', 'heif'].includes(fileType.toLowerCase());
 
   return (
-    <div className="content-stretch flex flex-[1_0_0] items-start justify-center min-h-0 relative w-full pt-[16px] overflow-hidden">
-      <div className="w-full max-w-[312px] h-full max-h-[440px] relative rounded-[10px] bg-[#f5f7f9] flex items-center justify-center" data-name="image 13">
+    <div className="content-stretch flex flex-[1_0_0] items-start justify-center min-h-0 relative w-full pt-[12px] overflow-hidden">
+      <div className="w-full max-w-[312px] h-full min-h-[180px] relative rounded-[10px] bg-[#f5f7f9] flex items-center justify-center overflow-hidden" data-name="image 13">
         {!imageUrl ? (
           <p className="font-['Inter:Regular','Noto_Sans_KR:Regular',sans-serif] text-[14px] text-[#8c98a1]">파일을 선택해주세요</p>
         ) : isPdf ? (
-          <embed className="absolute inset-0 max-w-none rounded-[10px] size-full pointer-events-auto" src={imageUrl} type="application/pdf" />
+          <PdfPreview filename={filename} fileSize={fileSize} fileUrl={imageUrl} />
         ) : isHeic ? (
           <div className="flex flex-col items-center gap-[8px] p-[24px] text-center">
             <p className="font-['Inter:Medium','Noto_Sans_KR:Medium',sans-serif] text-[14px] text-[#6a747c]">HEIC/HEIF 형식은 미리보기가 지원되지 않습니다</p>
@@ -272,15 +306,15 @@ function Frame4({ imageUrl, fileType }: { imageUrl: string; fileType: string }) 
   );
 }
 
-function Body({ currentPage, totalPages, onPrev, onNext, filename, imageUrl, fileType, onFileListClick }: { currentPage: number; totalPages: number; onPrev: () => void; onNext: () => void; filename: string; imageUrl: string; fileType: string; onFileListClick: () => void }) {
+function Body({ currentPage, totalPages, onPrev, onNext, filename, imageUrl, fileType, fileSize, onFileListClick }: { currentPage: number; totalPages: number; onPrev: () => void; onNext: () => void; filename: string; imageUrl: string; fileType: string; fileSize?: number; onFileListClick: () => void }) {
   return (
     <div className="flex-[1_0_0] min-h-px relative w-full" data-name="body">
       <div className="flex flex-col items-center size-full">
         <div className="content-stretch flex flex-col items-center px-[24px] relative size-full">
           <ProblemQuantityHeader onFileListClick={onFileListClick} />
           <Frame3 filename={filename} />
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPrev={onPrev} onNext={onNext} />
-          <Frame4 imageUrl={imageUrl} fileType={fileType} />
+          <Pagination currentPage={currentPage} totalPages={totalPages || 1} onPrev={onPrev} onNext={onNext} />
+          <Frame4 imageUrl={imageUrl} fileType={fileType} filename={filename} fileSize={fileSize} />
         </div>
       </div>
     </div>
@@ -367,6 +401,7 @@ function S3PreviewContent() {
   const filename = currentFile?.file.name || '';
   const imageUrl = currentFile?.preview || '';
   const fileType = currentFile?.file.name.split('.').pop() || '';
+  const fileSize = currentFile?.file.size;
 
   return (
     <>
@@ -381,6 +416,7 @@ function S3PreviewContent() {
           filename={filename}
           imageUrl={imageUrl}
           fileType={fileType}
+          fileSize={fileSize}
           onFileListClick={handleOpenFileList}
         />
         <Component1 onNextClick={handleOpenQualityCheck} />
