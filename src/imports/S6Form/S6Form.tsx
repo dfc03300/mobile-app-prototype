@@ -91,6 +91,10 @@ function SchoolAutocomplete({ value, onChange, onSelectSchool }: SchoolAutocompl
               return (
                 <div
                   key={index}
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+                    handleSelect(school);
+                  }}
                   onClick={() => handleSelect(school)}
                   className={`h-[48px] relative shrink-0 w-full cursor-pointer hover:bg-[#f1f4f8] px-[20px] py-[12px] flex items-center ${index === 0 ? 'bg-[#f1f4f8]' : ''}`}
                   data-name="Container"
@@ -234,8 +238,8 @@ export default function S6Form() {
   const [grade, setGrade] = useState("");
   const [semester, setSemester] = useState("");
   const [examType, setExamType] = useState("");
-  const [subject, setSubject] = useState("");
-  const [publisher, setPublisher] = useState("");
+  const [subject] = useState("수학");
+  const [publisher] = useState("공통");
   const [showConfirmHome, setShowConfirmHome] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showComplete, setShowComplete] = useState(false);
@@ -507,8 +511,9 @@ export default function S6Form() {
                         <div className="content-stretch flex gap-[24px] items-center pl-[20px] pr-[16px] py-[16px] relative size-full">
                           <select
                             value={subject}
-                            onChange={(e) => setSubject(e.target.value)}
-                            className="flex-[1_0_0] font-['Inter:Medium','Noto_Sans_KR:Medium',sans-serif] font-medium leading-[1.44] min-w-px not-italic relative text-[#8c98a1] text-[16px] tracking-[0.32px] bg-transparent border-none outline-none appearance-none cursor-pointer"
+                            disabled
+                            onChange={() => undefined}
+                            className="hidden"
                           >
                             <option value="">과목 선택</option>
                             <option value="수학">수학</option>
@@ -522,6 +527,9 @@ export default function S6Form() {
                             <option value="미술">미술</option>
                             <option value="체육">체육</option>
                           </select>
+                          <p className="flex-[1_0_0] font-['Inter:Medium','Noto_Sans_KR:Medium',sans-serif] font-medium leading-[1.44] min-w-px not-italic relative text-[#8c98a1] text-[16px] tracking-[0.32px]">
+                            수학
+                          </p>
                           <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 size-[20px]" data-name="icon slot">
                             <div className="flex-[1_0_0] min-h-px relative w-full" data-name="arrow-down-simple">
                               <div className="absolute bottom-[31.67%] flex items-center justify-center left-1/4 right-1/4 top-[37.5%]" style={{ containerType: "size" }}>
@@ -556,14 +564,18 @@ export default function S6Form() {
                         <div className="content-stretch flex gap-[24px] items-center pl-[20px] pr-[16px] py-[16px] relative size-full">
                           <select
                             value={publisher}
-                            onChange={(e) => setPublisher(e.target.value)}
-                            className="flex-[1_0_0] font-['Inter:Medium','Noto_Sans_KR:Medium',sans-serif] font-medium leading-[1.44] min-w-px not-italic relative text-[#8c98a1] text-[16px] tracking-[0.32px] bg-transparent border-none outline-none appearance-none cursor-pointer"
+                            disabled
+                            onChange={() => undefined}
+                            className="hidden"
                           >
                             <option value="">출판사 선택</option>
                             <option value="공통">공통</option>
                             <option value="천재교과서">천재교과서</option>
                             <option value="교학사">교학사</option>
                           </select>
+                          <p className="flex-[1_0_0] font-['Inter:Medium','Noto_Sans_KR:Medium',sans-serif] font-medium leading-[1.44] min-w-px not-italic relative text-[#8c98a1] text-[16px] tracking-[0.32px]">
+                            공통
+                          </p>
                           <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 size-[20px]" data-name="icon slot">
                             <div className="flex-[1_0_0] min-h-px relative w-full" data-name="arrow-down-simple">
                               <div className="absolute bottom-[31.67%] flex items-center justify-center left-1/4 right-1/4 top-[37.5%]" style={{ containerType: "size" }}>

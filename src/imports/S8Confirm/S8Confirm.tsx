@@ -50,17 +50,17 @@ function FileSummary({ formData }: { formData: S8ConfirmProps["formData"] }) {
   const metaLine = `${formData.grade || "1학년"} ${formData.semester || "1학기"} ${formData.examType || "중간고사"}`.trim();
 
   return (
-    <div className="flex h-[116px] w-full max-w-[390px] shrink-0 px-[24px] pt-[40px]">
-      <div className="flex h-[92px] w-full overflow-hidden rounded-[10px]">
+    <div className="flex w-full max-w-[390px] shrink-0 px-[24px] pt-[38px]">
+      <div className="flex min-h-[108px] w-full overflow-hidden rounded-[10px]">
         <div className="flex w-[74px] shrink-0 items-center justify-center bg-[#3ba5e6]">
           <span className="font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] text-[20px] font-bold leading-[1.68] text-white">
             {subject}
           </span>
         </div>
-        <div className="flex min-w-0 flex-1 items-center border-2 border-l-0 border-[#3ba5e6] bg-[#f1f4f8] px-[14px]">
-          <div className="min-w-0 font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] text-[20px] font-bold leading-[1.68] text-black">
-            <p className="truncate">{titleLine}</p>
-            <p className="truncate">{metaLine}</p>
+        <div className="flex min-w-0 flex-1 items-center border-2 border-l-0 border-[#3ba5e6] bg-[#f1f4f8] px-[14px] py-[10px]">
+          <div className="min-w-0 font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] text-[clamp(17px,4.5vw,20px)] font-bold leading-[1.42] text-black">
+            <p className="whitespace-normal break-keep">{titleLine}</p>
+            <p className="whitespace-normal break-keep">{metaLine}</p>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@ function FileSummary({ formData }: { formData: S8ConfirmProps["formData"] }) {
 
 function ConfirmMessage() {
   return (
-    <div className="flex w-full shrink-0 justify-center pt-[24px]">
+    <div className="flex w-full shrink-0 justify-center px-[24px] pt-[22px]">
       <p className="font-['Pretendard_Variable:Bold','Noto_Sans_KR:Bold',sans-serif] text-[15px] font-bold leading-[1.68] tracking-[0.32px] text-[#0b0d11]">
         등록 전 입력 정보를 확인해 주세요.
       </p>

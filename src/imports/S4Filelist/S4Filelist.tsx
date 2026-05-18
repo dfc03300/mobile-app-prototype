@@ -235,7 +235,7 @@ function Content({ onAddFile, selectedIndex, setSelectedIndex }: { onAddFile: ()
 
 function BottomSheet1({ onClose, onAddFile, selectedIndex, setSelectedIndex }: { onClose: () => void; onAddFile: () => void; selectedIndex: number | null; setSelectedIndex: (index: number | null) => void }) {
   return (
-    <div className="-translate-y-1/2 absolute bg-white content-stretch flex flex-col h-[532px] items-center left-0 overflow-clip right-0 rounded-tl-[24px] rounded-tr-[24px] shadow-[0px_-8px_16px_0px_rgba(11,13,17,0.08)] top-[calc(50%+134px)]" data-name="Bottom Sheet">
+    <div className="absolute bottom-0 left-0 right-0 bg-white content-stretch flex flex-col h-[532px] max-h-[calc(100%-24px)] items-center overflow-clip rounded-tl-[24px] rounded-tr-[24px] shadow-[0px_-8px_16px_0px_rgba(11,13,17,0.08)]" data-name="Bottom Sheet">
       <Title onClose={onClose} />
       <Content onAddFile={onAddFile} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} />
     </div>
@@ -244,7 +244,7 @@ function BottomSheet1({ onClose, onAddFile, selectedIndex, setSelectedIndex }: {
 
 function BottomSheet({ onClose, onAddFile, selectedIndex, setSelectedIndex }: { onClose: () => void; onAddFile: () => void; selectedIndex: number | null; setSelectedIndex: (index: number | null) => void }) {
   return (
-    <div className="absolute bg-[rgba(11,13,17,0.6)] h-full left-0 overflow-clip top-0 w-full" data-name="BottomSheet">
+    <div className="absolute inset-0 bg-[rgba(11,13,17,0.6)] overflow-clip" data-name="BottomSheet">
       <BottomSheet1 onClose={onClose} onAddFile={onAddFile} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} />
     </div>
   );
@@ -279,7 +279,7 @@ function S4FilelistContent({ isOpen, onClose }: S4FilelistProps) {
         onChange={handleFileChange}
         className="hidden"
       />
-      <div className="fixed inset-0 z-50 overflow-hidden">
+      <div className="absolute inset-0 z-50 overflow-hidden">
         <DndProvider backend={HTML5Backend}>
           <BottomSheet onClose={onClose} onAddFile={handleAddFileClick} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} />
         </DndProvider>
