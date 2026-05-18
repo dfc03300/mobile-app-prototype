@@ -16,7 +16,7 @@ interface S9CompleteProps {
 
 function SheetTitle() {
   return (
-    <div className="flex w-full shrink-0 flex-col items-center gap-[8px] pt-[8px]">
+    <div className="flex w-full shrink-0 flex-col items-center gap-[12px] pt-[8px]">
       <div className="h-[4px] w-[44px] shrink-0 rounded-[4px] bg-[#e3e8ed]" />
       <p className="font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] text-[16px] font-bold leading-[1.44] tracking-[0.32px] text-[#0b0d11]">
         등록 완료
@@ -27,8 +27,8 @@ function SheetTitle() {
 
 function CompleteIcon() {
   return (
-    <div className="relative size-[148px] shrink-0" data-name="glass">
-      <div className="absolute left-[9px] size-[78.543px] top-[22.14px]">
+    <div className="relative size-[132px] shrink-0" data-name="glass">
+      <div className="absolute left-[8px] top-[20px] size-[70px]">
         <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 78.5432 78.5432">
           <circle cx="39.2716" cy="39.2716" fill="url(#paint0_linear_complete)" r="39.2716" />
           <defs>
@@ -39,7 +39,7 @@ function CompleteIcon() {
           </defs>
         </svg>
       </div>
-      <div className="absolute left-[24.71px] overflow-clip size-[125.669px] top-[19px]">
+      <div className="absolute left-[22px] top-[17px] size-[112px] overflow-clip">
         <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 106.295 106.295">
           <path clipRule="evenodd" d={svgPaths.p2ab91980} fill="#4F60FF" fillOpacity="0.08" fillRule="evenodd" stroke="white" strokeOpacity="0.12" strokeWidth="1.57086" />
           <g filter="url(#filter_complete)">
@@ -72,12 +72,12 @@ function CompleteContent({ formData }: { formData: S9CompleteProps["formData"] }
   const title = `${formData.year || "2026년"} ${formatRegion(formData.region) || "관악구"} ${formData.schoolName || "당곡중학교"} ${formData.grade || "1학년"} ${formData.semester || "1학기"} ${formData.examType || "중간고사"}`.trim();
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-[24px] pb-[12px] pt-[22px]">
+    <div className="flex min-h-0 flex-1 flex-col items-center px-[32px] pt-[28px] text-center">
       <CompleteIcon />
-      <p className="mt-[26px] font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] text-[18px] font-bold leading-[1.68] text-[#0b0d11]">
+      <p className="mt-[22px] font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] text-[18px] font-bold leading-[1.68] text-[#0b0d11]">
         자료 등록이 완료되었습니다
       </p>
-      <p className="mt-[18px] max-w-[312px] text-center font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] text-[13px] font-bold leading-[1.44] tracking-[0.32px] text-[#394046]">
+      <p className="mt-[14px] max-w-[312px] font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] text-[13px] font-bold leading-[1.44] tracking-[0.32px] text-[#394046]">
         {title}
       </p>
     </div>
@@ -86,7 +86,7 @@ function CompleteContent({ formData }: { formData: S9CompleteProps["formData"] }
 
 function CompleteButton({ onClose }: { onClose: () => void }) {
   return (
-    <div className="w-full shrink-0 px-[24px] pb-[24px]">
+    <div className="w-full shrink-0 px-[32px] pb-[28px]">
       <button
         type="button"
         onClick={onClose}
@@ -103,7 +103,7 @@ function CompleteButton({ onClose }: { onClose: () => void }) {
 function BottomSheet({ onClose, formData }: { onClose: () => void; formData: S9CompleteProps["formData"] }) {
   return (
     <div className="absolute inset-0 z-10 overflow-hidden bg-[rgba(11,13,17,0.6)]" data-name="BottomSheet">
-      <div className="absolute bottom-0 left-0 right-0 flex h-[431px] max-h-[calc(100%-24px)] flex-col overflow-hidden rounded-tl-[24px] rounded-tr-[24px] bg-white shadow-[0px_-8px_16px_0px_rgba(11,13,17,0.08)]" data-name="Bottom Sheet">
+      <div className="absolute bottom-0 left-0 right-0 flex h-[414px] max-h-[calc(100%-24px)] flex-col overflow-hidden rounded-tl-[24px] rounded-tr-[24px] bg-white shadow-[0px_-8px_16px_0px_rgba(11,13,17,0.08)]" data-name="Bottom Sheet">
         <SheetTitle />
         <CompleteContent formData={formData} />
         <CompleteButton onClose={onClose} />

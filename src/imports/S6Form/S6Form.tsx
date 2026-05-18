@@ -24,9 +24,16 @@ interface SchoolAutocompleteProps {
 function SchoolAutocomplete({ value, onChange, onSelectSchool }: SchoolAutocompleteProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [filteredSchools, setFilteredSchools] = useState<typeof SCHOOLS>([]);
+  const [selectedSchoolName, setSelectedSchoolName] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    if (value && selectedSchoolName === value) {
+      setFilteredSchools([]);
+      setShowDropdown(false);
+      return;
+    }
+
     if (value) {
       const filtered = SCHOOLS.filter(school =>
         school.name.toLowerCase().includes(value.toLowerCase())
@@ -37,9 +44,10 @@ function SchoolAutocomplete({ value, onChange, onSelectSchool }: SchoolAutocompl
       setFilteredSchools([]);
       setShowDropdown(false);
     }
-  }, [value]);
+  }, [selectedSchoolName, value]);
 
   const handleSelect = (school: typeof SCHOOLS[0]) => {
+    setSelectedSchoolName(school.name);
     onChange(school.name);
     onSelectSchool(school);
     setShowDropdown(false);
@@ -56,7 +64,10 @@ function SchoolAutocomplete({ value, onChange, onSelectSchool }: SchoolAutocompl
                   ref={inputRef}
                   type="text"
                   value={value}
-                  onChange={(e) => onChange(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedSchoolName("");
+                    onChange(e.target.value);
+                  }}
                   className="flex-[1_0_0] font-['Inter:Medium','Noto_Sans_KR:Medium',sans-serif] font-medium leading-[1.44] min-w-px not-italic relative text-[#0b0d11] text-[16px] tracking-[0.32px] bg-transparent border-none outline-none"
                   placeholder="학교명 입력"
                 />
@@ -504,7 +515,7 @@ export default function S6Form() {
                   <p className="font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] relative shrink-0 text-[#0b0d11]">과목</p>
                   <p className="font-['Inter:Bold',sans-serif] relative shrink-0 text-[#3ba5e6]">*</p>
                 </div>
-                <div className="bg-white h-[55px] relative rounded-[4px] shrink-0 w-full" data-name="dropbox">
+                <div className="bg-[#f1f4f8] h-[55px] relative rounded-[4px] shrink-0 w-full" data-name="dropbox">
                   <div className="content-stretch flex flex-col items-start justify-center overflow-clip relative rounded-[inherit] size-full">
                     <div className="h-[48px] relative shrink-0 w-full" data-name="familysite">
                       <div className="flex flex-row items-center size-full">
@@ -530,7 +541,7 @@ export default function S6Form() {
                           <p className="flex-[1_0_0] font-['Inter:Medium','Noto_Sans_KR:Medium',sans-serif] font-medium leading-[1.44] min-w-px not-italic relative text-[#8c98a1] text-[16px] tracking-[0.32px]">
                             수학
                           </p>
-                          <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 size-[20px]" data-name="icon slot">
+                          <div className="invisible content-stretch flex flex-col items-start overflow-clip relative shrink-0 size-[20px]" data-name="icon slot">
                             <div className="flex-[1_0_0] min-h-px relative w-full" data-name="arrow-down-simple">
                               <div className="absolute bottom-[31.67%] flex items-center justify-center left-1/4 right-1/4 top-[37.5%]" style={{ containerType: "size" }}>
                                 <div className="-rotate-90 flex-none h-[100cqw] w-[100cqh]">
@@ -557,7 +568,7 @@ export default function S6Form() {
                   <p className="font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] relative shrink-0 text-[#0b0d11]">출판사</p>
                   <p className="font-['Inter:Bold',sans-serif] relative shrink-0 text-[#3ba5e6]">*</p>
                 </div>
-                <div className="bg-white h-[55px] relative rounded-[4px] shrink-0 w-full" data-name="dropbox">
+                <div className="bg-[#f1f4f8] h-[55px] relative rounded-[4px] shrink-0 w-full" data-name="dropbox">
                   <div className="content-stretch flex flex-col items-start justify-center overflow-clip relative rounded-[inherit] size-full">
                     <div className="h-[48px] relative shrink-0 w-full" data-name="familysite">
                       <div className="flex flex-row items-center size-full">
@@ -576,7 +587,7 @@ export default function S6Form() {
                           <p className="flex-[1_0_0] font-['Inter:Medium','Noto_Sans_KR:Medium',sans-serif] font-medium leading-[1.44] min-w-px not-italic relative text-[#8c98a1] text-[16px] tracking-[0.32px]">
                             공통
                           </p>
-                          <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 size-[20px]" data-name="icon slot">
+                          <div className="invisible content-stretch flex flex-col items-start overflow-clip relative shrink-0 size-[20px]" data-name="icon slot">
                             <div className="flex-[1_0_0] min-h-px relative w-full" data-name="arrow-down-simple">
                               <div className="absolute bottom-[31.67%] flex items-center justify-center left-1/4 right-1/4 top-[37.5%]" style={{ containerType: "size" }}>
                                 <div className="-rotate-90 flex-none h-[100cqw] w-[100cqh]">
