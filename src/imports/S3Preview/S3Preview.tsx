@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { FileText, FileUp } from "lucide-react";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.mjs?url";
 import { ConditionalFileProvider, useFiles } from "../../app/contexts/FileContext";
@@ -14,12 +15,12 @@ function ProgressHeader() {
   return (
     <div className="flex w-full shrink-0 items-center justify-center gap-[8px] py-[10px]">
       <div className="flex items-center gap-[4px]">
-        <span className="text-[18px] text-[#3ba5e6]">▧</span>
+        <FileUp aria-hidden="true" className="size-[18px] shrink-0 text-[#3ba5e6]" strokeWidth={2} />
         <span className="font-['Inter:Bold','Noto_Sans_KR:Bold',sans-serif] text-[13px] font-bold text-[#0b0d11]">파일 업로드</span>
       </div>
       <div className="h-px w-[28px] border-t border-dashed border-[#8c98a1]" />
       <div className="flex items-center gap-[4px]">
-        <span className="text-[18px] text-[#8c98a1]">▤</span>
+        <FileText aria-hidden="true" className="size-[18px] shrink-0 text-[#8c98a1]" strokeWidth={2} />
         <span className="font-['Inter:Medium','Noto_Sans_KR:Medium',sans-serif] text-[13px] font-medium text-[#394046]">기본정보 입력</span>
       </div>
     </div>
